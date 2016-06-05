@@ -4,15 +4,15 @@
 
 This repository stores one component of broader project code-named "M'interessa" that is expected to evaluate the knowledge acquired in the postgraduate of [Data Science at the Universitat de Barcelona](http://www.ub.edu/datascience/postgraduate/).
 
-As of suche, this is an ongoing process (at least until version 1.0.0, which is expected to be the one to be presented as a final result) and by no means is a production-ready web application. Moreover, the main focus of the project is on the machine learning, natural language processing and scrapping steps, and this website is only intended to ease the review and evaluation of the outcomes of such steps.
+This is an ongoing process (at least until version 1.0.0, which is expected to be the one to be presented as a final result), will be used as a Proof of Concept and by no means is a production-ready web application. Moreover, the main focus of the project is on the machine learning, natural language processing and scrapping steps, and this website is only intended to ease the review and evaluation of the underlying pipeline.
 
 The links to the repositories of the remaining components will be provided on further releases.
 
-Also the application has many identified bugs that will be fixed along the time before the final release (and soon to be expected to create issues into github itself). The purpose of this first release is to publicly share the component with other members of the team, and to be linkable from the website/blog.  After we get a version tagged as 1.0.0, we'll be pleased to accept and review Pull Requests from other community members outside of the group.
+Also the application has some clearly visible bugs that will be fixed along the time before the final release (and soon to be expected to create issues into github itself). The purpose of this first release is to publicly share the component with other members of the team, and to be linkable from the website/blog.  After we get a version tagged as 1.0.0, we'll be pleased to accept and review Pull Requests from other community members outside of the group.
 
 ## Objective of the project
 
-The project is intended to use machine learning models, natural language processing and scrapping technologies to assist the user on choosing and receiving the most relevant tweets that are being distributed over the Twitter public streaming api, given a basic set of tweets provided by the user itself (whether from its timeline or from a twitter search) and from a progressive tweet selection.
+The project is intended to use machine learning models, natural language processing and scrapping technologies (along with other big data technologies) to assist the user on choosing and receiving the most relevant tweets that are being distributed over the Twitter public streaming api, given a basic set of tweets provided by the user itself (whether from its timeline or from a twitter search) and from a progressive tweet selection.
 
 The models are expected to learn progressively and specifically for each user's need.
 
@@ -22,7 +22,7 @@ You can read more on the [Link to be provided](#) companion website of the proje
 
 ### Technical requirements
 
-The only technical requirement as of now is [Docker](https://www.docker.com). The rest of the dependencies are handled by Docker itself inside of each container, and also from the Dockerfile provided into the repository.
+Currently, the only technical requirement is [Docker](https://www.docker.com). The rest of the dependencies are handled by Docker itself inside of each container, and also from the Dockerfile provided into the repository.
 
 ### Third party requirements
 
