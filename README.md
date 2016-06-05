@@ -2,7 +2,7 @@
 
 ## Disclaimer
 
-This repository stores one component of a more general project code-named "M'interessa" and that is expected to evaluate the knowledge acquired in the postgraduate
+This repository stores one component of broader project code-named "M'interessa" that is expected to evaluate the knowledge acquired in the postgraduate of [Data Science at the Universitat de Barcelona](http://www.ub.edu/datascience/postgraduate/).
 
 As of suche, this is an ongoing process (at least until version 1.0.0, which is expected to be the one to be presented as a final result) and by no means is a production-ready web application. Moreover, the main focus of the project is on the machine learning, natural language processing and scrapping steps, and this website is only intended to ease the review and evaluation of the outcomes of such steps.
 
