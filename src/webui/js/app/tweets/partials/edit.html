@@ -1,0 +1,58 @@
+<div class="row">
+	<div class="col-md-6 col-xs-12">
+		<br/>
+		<form name="topicConfigForm" ng-submit="saveTopicConfig()">
+			<div class="panel panel-primary">
+				<div class="panel-body">
+					<div class="form-group">
+						<div class="col-md-8">
+							<input class="form-control" id="topicTitle" placeholder="Set a title for that topic" ng-model="editedTopic.title"/>
+						</div>
+						<div class="col-md-1">
+							<button class="btn btn-primary" type="submit">Save</button>
+						</div>
+						<div class="col-md-2">
+							<button class="btn btn-warning" type="submit">Start receiving</button>
+						</div>
+					</div>
+				</div>
+			</div>
+			<div class="panel panel-primary">
+				<div class="panel-heading"><span class="fa fa-comments"></span>&nbsp;&nbsp;Fetch my timeline</div>
+				<div class="panel-body">
+					<fieldset class="form-group">
+						<p>In order to start learning what the system can understand your interest in that topic we will use the tweets in your timeline, so that you can choose which ones are more resembling to what you're looking for.</p>
+						<p>Click on the button below to start the fetch process.</p>
+						<p class="text-center">
+							<div class="col-md-4 col-md-offset-2">
+								<label for="timelineCount">How many tweets (max. 200)</label>
+								<input type="text" value="100" placeholder="max. 200" class="form-control"/>
+							</div>
+							<div class="col-md-2">
+								<label>&nbsp;</label>
+								<button class="btn btn-primary" ng-click="fetchTimeline()">Get timeline</button>
+							</div>
+						</p>
+					</fieldset>
+				</div>
+			</div>
+			<div class="panel panel-primary">
+				<div class="panel-heading"><span class="fa fa-search"></span>&nbsp;&nbsp;Start by searching</div>
+				<div class="panel-body">
+					<fieldset class="form-group">
+						<div class="form-group">
+							<p><span class="glyphicon glyphicon-info"></span>If you are not following any user with such interest, you can start by performing a search over twitter and select the most relevant tweets.</p>
+						</div>
+						<div class="form-group">
+							<label for="twitterSearch">Search on Twitter</label>
+							<input class="form-control" id="twitterSearch" placeholder="Write a search and type return" ng-model="editedTopic.search"/>
+						</div>
+					</fieldset>
+				</div>
+			</div>
+		</form>
+	</div>
+	<div class="col-md-6 col-xs-12">
+		<div ui-view=""
+	</div>
+</div>

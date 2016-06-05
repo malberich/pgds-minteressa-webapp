@@ -1,0 +1,42 @@
+{
+    "license" : "BSD-3-Clause",
+    "name" : "pgds-minteressa-web-frontend",
+    "private": true,
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/malberich/pgds-minteressa-web-backend.git"
+    },
+    "dependencies": {
+        "bootstrap": "~3.3",
+        "jquery": "~1.11",
+        "angular": "1.4.9",
+        "angular-cookies": "1.4.9",
+        "angular-ui-router": "0.2.17",
+        "angular-ui-bootstrap": "1.3.3",
+        "angular-sanitize": "1.5.6",
+        "restangular": "1.5.1",
+        "font-awesome": "4.6.3",
+        "angular-growl-v2": "0.7.5"
+    },
+    "devDependencies": {
+        "del": "1.1.1",
+        "vinyl-paths": "1.0.0",
+        "yargs": "3.7.2",
+        "gulp": ">=3.8.7",
+        "gulp-angular-templatecache": ">=1.7.0",
+        "gulp-filter": "1.0.1",
+        "gulp-print": ">=1.1.0",
+        "gulp-if": "latest",
+        "gulp-minify-css": "0.3.8",
+        "gulp-rename": ">=1.2.0",
+        "gulp-assets": "latest",
+        "gulp-rev": ">=1.1.0",
+        "gulp-rev-replace": ">=0.2",
+        "gulp-symlink": "1.0.1",
+        "gulp-uglify": "1.0.1",
+        "gulp-useref": "2.0",
+        "gulp-util": ">=3.0",
+        "gulp-modify-css-urls": "0.2.0",
+        "underscore": "1.8.3"
+    }
+}

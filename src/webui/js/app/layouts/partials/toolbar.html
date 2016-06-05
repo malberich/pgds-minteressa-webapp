@@ -1,0 +1,30 @@
+<nav class="navbar navbar-default"
+     role="navigation"
+     ng-if="Sessions.checkSession()">
+    <div class="container">
+        <!-- Brand and toggle get grouped for better mobile display -->
+        <!-- Collect the nav links, forms, and other content for toggling -->
+        <div class="navbar-header">
+            <a class="navbar-brand navbar-primary" href="#"><span class="glyphicon glyphicon-eye-open"></span>&nbsp;&nbsp;M'interessa</a>
+        </div>
+        <div class="nav navbar-header navbar-right">
+            <div class="btn-group" uib-dropdown dropdown-append-to-body>
+                <button id="user-dropdown" uib-dropdown-toggle class="btn btn-default">
+                   <span class="glyphicon glyphicon-user"></span>&nbsp;&nbsp;{{user.displayName || '(Unnamed user)'}}&nbsp;<span class="caret"></span>
+                </button>
+                <ul uib-dropdown-menu
+                    id="user-menu"
+                    aria-labelledby="user-dropdown"
+                    class="dropdown-menu"
+                    role="menu">
+                    <li ng-click="logout()">
+                        <a href="#">
+                            <span class="glyphicon glyphicon-log-out"></span>&nbsp;&nbsp;&nbsp;Log
+                            out
+                        </a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</nav>

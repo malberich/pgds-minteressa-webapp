@@ -1,0 +1,21 @@
+<div class="col-md-1">
+	<img class="img-circle" src="{{tweet.user.profile_image_url}}"/>
+</div>
+<div class="col-md-3 col-sm-3 col-xs-12 pull-right">
+	<button ng-if="!saved" class="btn btn-sm btn-success" ng-click="saveTweet(tweet.id)">
+		<span class="glyphicon glyphicon-ok"></span>
+	</button>&nbsp;<button class="btn btn-sm btn-danger" ng-click="rmTweet(tweet.id)">
+		<span class="glyphicon glyphicon-trash"></span>
+	</button><br ng-if="tweet.hashtag.length"/>
+	<span ng-if="tweet.hashtag.length" class="badge">{{tweet.hashtag.length || 0}} Hashtags</span>
+	<br ng-if="tweet.mention.length"/>
+	<span ng-if="tweet.mention.length" class="badge">{{tweet.mention.length || 0}} Mentions</span>
+	<br ng-if="tweet.link.length"/><br ng-if="tweet.link.length"/>
+	<a ng-if="tweet.link.length" class="btn btn-xs btn-primary" ui-sref="authz.topics.tweet_urls">
+		{{tweet.link.length || 0}} URLs&nbsp;&nbsp;<span class="glyphicon glyphicon-chevron-right"></span>
+	</a>
+</div>
+<div class="col-md-7">
+	<strong ng-bind-html="'@' + tweet.user.screen_name | linkUsername"></strong>:
+	<span ng-bind-html="tweet.text | tweet"></span>
+</div>

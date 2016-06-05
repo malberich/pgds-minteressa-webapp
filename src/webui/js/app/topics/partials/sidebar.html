@@ -1,0 +1,22 @@
+<div class="panel panel-primary" ng-if="Sessions.checkSession()">
+	<div class="panel-heading">
+		<h3 class="panel-title"><span class="glyphicon glyphicon-edit"></span>&nbsp;&nbsp;Your topics</h3>
+	</div>
+	<table class="table table-hover">
+		<tbody>
+			<tr>
+				<td colspan="2">
+					<a href="#/topics/new" class="btn btn-primary">Create a new topic</a>
+				</td>
+			</tr>
+	        <tr ng-model="topics" ng-repeat="topic in topics">
+	            <td ui-sref="authz.topics({topicId: topic._id})">
+	            	{{topic.title | characters:45}}
+	            </td>
+	            <td ui-sref="authz.topics({topicId: topic._id})">
+	            	<span class="pull-right badge">{{topic.count || '0'}}</span>
+	            </td>
+	        </tr>
+	    </tbody>
+	</table>
+</div>

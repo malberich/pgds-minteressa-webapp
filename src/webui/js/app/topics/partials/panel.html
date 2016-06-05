@@ -1,0 +1,29 @@
+<uib-tabset>
+    <uib-tab ng-if="!newTopic">
+    	<uib-tab-heading>
+            <span class="fa fa-list"></span>
+            Review tweets
+        </uib-tab-heading>
+        <div class="row">
+        	<div class="col-md-5" ui-view="unreviewed"></div>
+            <div class="col-md-7" ui-view="documents"></div>
+        </div>
+    </uib-tab>
+    <uib-tab ng-if="!newTopic">
+    	<uib-tab-heading>
+            <span class="fa fa-star"></span>
+            Saved tweets
+        </uib-tab-heading>
+        <div class="row">
+    	   <div class="col-md-5" ui-view="saved"></div>
+           <div class="col-md-7" ui-view="documents"></div>
+        </div>
+    </uib-tab>
+    <uib-tab>
+    	<uib-tab-heading>
+            <span class="fa fa-cog"></span>
+            Configure topic
+        </uib-tab-heading>
+    	<div ui-view="config"></div>
+    </uib-tab>
+</uib-tabset>
