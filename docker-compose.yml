@@ -1,0 +1,9 @@
+pgds-minteressa-webdb:
+  image: mongo:3.2
+#  container_name: pgds-minteressa-webapp
+pgds-minteressa-webapp:
+  build: src
+  ports:
+    - "8080:8080"
+  links:
+    - pgds-minteressa-webdb:pgds-minteressa-webdb
