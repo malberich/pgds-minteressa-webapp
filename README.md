@@ -53,7 +53,21 @@ There are two containers to be used for the web application:
 * Storage container running MongDB 3.2 that will store the data both from the users and from the internally-filtered streams.
 * Frontend container to accept requests and return response to web users, requires [nodejs](https://nodejs.org).
 
-### Storage container
+## Starting the containers
+
+### Using docker-compose
+
+Execute 
+
+```bash
+docker-compose up
+```
+
+from the main folder. Alternatively, you can manually start the `mongodb` and `webapp` containers manually as in the following section.
+
+### Manual startup
+
+#### Storage container
 
 For the mongodb instance, it is a PoC container, and so there's not a special need to configure more a default database.  In further releases this container may be moved to other backend-centered containers, more near to scrapping, modelling and so on.
 
@@ -72,7 +86,7 @@ $ docker run --name pgds-minteressa-webdb -d mongo:3.2
 
 Please, refer to [The Mongo docker hub page](https://hub.docker.com/_/mongo/) for more details on configuration options. The mongodb features used in this project are not specially demanding, and perhaps you can use an older mongodb version or to upgrade to newer ones.
 
-### Frontend container
+#### Frontend container
 
 The NodeJS container requires to install the dependencies' packages
 
@@ -83,7 +97,7 @@ $ docker build --no-cache -t pgds-minteressa-webapp
 You can avoid the *--no-cache* flag, it's only intended to avoid previous builds from being reused to build new versions of the template.
 
 
-## Docker run the build
+### Docker run the build
 
 First should start the mongodb container:
 
