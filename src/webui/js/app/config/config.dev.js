@@ -32,17 +32,16 @@ angular
                 'use strict';
 
                 $stateProvider.state(
-                    'authz.panel',
+                    'authz',
                     {
-                        parent: 'authz',
-                        url: '^/',
+                        abstract: true,
                         views: {
                             '': {
-                                templateUrl: 'js/app/layouts/partials/home.html'
+                                template:  '<ui-view/>'
                             },
-                            'edit@authz.panel': {
-                                controller: 'TopicsEditController',
-                                templateUrl: 'js/app/topics/partials/edit.html'
+                            'authz.nav@': {
+                                templateUrl: 'js/app/layouts/partials/toolbar.html',
+                                controller: 'ToolbarController'
                             }
                         }
                     }
@@ -56,20 +55,33 @@ angular
                 'use strict';
 
                 $stateProvider.state(
-                    'authz',
+                    'authz.panel',
                     {
-                        abstract: true,
+                        parent: 'authz',
+                        url: '^/',
                         views: {
                             '': {
-                                template:  '<ui-view/>'
+                                templateUrl: 'js/app/layouts/partials/home.html',
+                                controller: "TopicsHomeController"
                             },
-                            'authz.nav@': {
-                                templateUrl: 'js/app/layouts/partials/toolbar.html',
-                                controller: 'ToolbarController'
+                            'topic_config@authz.panel': {
+                                controller: 'TopicsEditController',
+                                templateUrl: 'js/app/topics/partials/edit.html'
                             },
-                            'authz.topics@': {
-                                templateUrl: 'js/app/topics/partials/sidebar.html',
-                                controller: 'TopicsIndexController'
+                            'tweet_search@authz.panel': {
+                                controller: 'TweetsSearchIndexController',
+                                templateUrl: 'js/app/tweets/partials/searched.html'
+                            },
+                            'tweet_label_request@authz.panel': {
+                                controller: 'TweetsSearchIndexController',
+                                templateUrl: 'js/app/tweets/partials/index.html'
+                            },
+                            'tweet_saved@authz.panel': {
+                                controller: 'TweetsSavedIndexController',
+                                templateUrl: 'js/app/tweets/partials/index.html'
+                            },
+                            'tweet_view@authz.panel': {
+                                templateUrl: 'js/app/tweets/partials/view.html'
                             }
                         }
                     }
