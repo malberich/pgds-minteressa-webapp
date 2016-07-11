@@ -3,7 +3,8 @@ var express    = require('express'),
 	twitter    = require('twitter'),
 	UserModel  = require('../models/user'),
 	TweetModel = require('../models/tweet'),
-    router     = express.Router();
+    // kafka  = require('node-kafka/lib/kafka'),
+	router     = express.Router();
 
 router.route('/')
 	.get(
@@ -61,7 +62,7 @@ router.route('/:user_id/timeline')
 							});
 
 							client.get(
-								'statuses/user_timeline',
+								'statuses/home_timeline',
 								{screen_name: user.twitter.username},
 								function (error, tweets, response) {
 									if (!error) {
@@ -108,7 +109,7 @@ router.route('/:user_id/search')
 
 							client.get(
 								'search/tweets',
-								{q: req.param('q')},
+								{q: req.param('q'), count: 100, },
 								function (error, tweets, response) {
 									if (!error) {
 										for (var t = 0; t <= tweets.statuses.length; t += 1) {
@@ -128,5 +129,118 @@ router.route('/:user_id/search')
 			}
 		}
 	);
+
+
+router.route('/:user_id/tweets/')
+	.get(
+		require('connect-ensure-login').ensureLoggedIn(),
+		function (req, res) {
+			reviewFilter = (
+				req.param('review') ?
+				{review: req.query.review} :
+				{}
+			);
+			console.log(reviewFilter);
+			//TODO Should fetch data for this topic fetched from the processed store
+			return TweetModel
+				.find(reviewFilter)
+				.then(
+			   		function(err, rows) {
+			        	res.json(rows);
+			    	}
+		    	);
+		}
+	).post(
+		require('connect-ensure-login').ensureLoggedIn(),
+		function (req, res) {
+			res.status(403).json({error: "Cannot create tweets"});
+		}
+	);
+
+router.route('/:user_id/tweets/:tweet_id')
+	.get(
+		require('connect-ensure-login').ensureLoggedIn(),
+		function (req, res) {
+			TweetModel
+				.find()
+				.then(
+			   		function(err, rows) {
+			        	res.send(rows);
+			    	}
+		    	);
+			res.status(200).send({data: []});
+		}
+	)/*.put(
+		require('connect-ensure-login').ensureLoggedIn(),
+		function (req, res) {
+			res.status(200).json(req.body);
+		}
+	)*/.delete(
+		require('connect-ensure-login').ensureLoggedIn(),
+		function (req, res) {
+			res.status(200).json(['OK']);
+		}
+	);
+
+
+router.route('/:user_id/tweets/:tweet_id/:action')
+	.put(
+		require('connect-ensure-login').ensureLoggedIn(),
+		function (req, res) {
+			// var producer = new kafka.Producer({
+			// 	  brokers: "kafka:2181",
+			// 	  partition: 0,
+			// 	  topic: "topic-1234"
+			// 	}),
+			// 	tweet = req.body;
+			// console.log(tweet);
+			// producer.connect(
+			// 	function() {
+			// 	  producer.send(
+			// 	  	JSON.stringify(tweets),
+			// 	  	// 0,
+			// 	  	function(err) {
+			// 	    	console.log(err)
+			// 	  	}
+			// 	  )/*.on(
+			// 	  	"sent",
+			// 	  	function(err) {
+			// 	    	console.log(err)
+			// 	  	}
+			// 	  ).on(
+			// 	  	"delivery",
+			// 	  	function(err, length) {
+			// 	    	console.log(err, length)
+			// 	  	}
+			// 	  )*/.on(
+			// 	  	"error",
+			// 	  	function(err) {
+			// 	    	console.log(err)
+			// 	  	}
+			// 	  );
+			// 	}
+			// );
+
+			// producer.send(
+   // 				[
+   // 					{
+   // 						topic: 'topic-' + req.query['user_id'] + 'labeled',
+   // 						messages: tweet
+   // 					}
+			// 	]
+			// );
+			
+			// if (JSON.parse(tweet).minteressa.selected === true) {
+			// 	TweetModel
+			// 		.save(tweet)
+			// 		.then(
+			// 	   		function(err, tweet) {
+			// 	    	}
+			//     	);
+			// }	
+			res.status(200).json({data:[]});
+		}
+	);
+
 
 module.exports = router;
