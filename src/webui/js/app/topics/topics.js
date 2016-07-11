@@ -16,7 +16,7 @@ angular.module(
                     'authz.topics',
                     {
                         parent: 'authz',
-                        url: '^/topics/:topicId',
+                        url: '^/',
                         views: {
                             '': {
                                 templateUrl: 'js/app/topics/partials/panel.html',
@@ -37,10 +37,6 @@ angular.module(
                             'searched@authz.topics': {
                                 templateUrl: 'js/app/tweets/partials/searched.html'
                             },
-                            'documents@authz.topics': {
-                                templateUrl: 'js/app/tweets/partials/index.html',
-                                controller: 'TopicTweetDocumentsIndexController'
-                            },
                             'view@authz.topics': {
                                 templateUrl: 'js/app/tweets/partials/view.html'
                             }
@@ -48,89 +44,79 @@ angular.module(
                     }
                 );
         }
-    ).controller('TopicsIndexController', [
-        '$scope', '$log', '$state', 'Restangular', 'MinterSessions',
-        function TopicsIndexController($scope, $log, $state, Restangular, MinterSessions) {
-            'use strict';
-            $scope.topics = [];
-
-            $scope.newTopicData = {
-                title: ''
-            };
-
-            $scope.newTopic = function newTopic () {
-                Restangular
-                    .all('api/topics')
-                    .post($scope.newTopicData)
-                    .then(
-                        function (data) {
-                            $scope.newTopicTitle = '';
-                            $log.debug(data);
-                            if (data.data._id) {
-                                getTopics();
-                                $state.go('authz.topics', {params:{topic_id: data._id}});
+    ).controller(
+        'TopicsHomeController',
+        [
+            '$rootScope', '$scope', '$log', 'Restangular',
+            function TopicsHomeController($rootScope, $scope, $log, Restangular) {
+                $scope.selectedTweets = [];
+                $scope.classifiedTweets = [];
+                $scope.topic = {};
+                //TODO Perform periodic push against the server for saving the tweets
+                function updateTweet (tweetId, selected) {
+                    for (var item in $scope.selectedTweets) {
+                        if ($scope.selectedTweets.hasOwnProperty(item) &&
+                            $scope.selectedTweets[item].id === tweetId) {
+                            //$scope.selectedTweets[item].selected = selected;
+                            $scope.selectedTweets.splice(item, 1);
+                            $scope.selectedTweets[item].minteressa= {
+                                selected: selected
                             }
+                            Restangular
+                                .one('api/users', $rootScope.Sessions.getUser())
+                                .one('tweets', tweetId)
+                                .customPUT(
+                                    $scope.selectedTweets[item],
+                                    selected ? 'save' : 'discard'
+                                ).then(
+                                    function (data) {
+                                        // $scope.classifiedTweets.push($scope.selectedTweets[item]);
+                                        
+                                    }
+                                 );
                         }
-                    );
-            };
+                    }
 
-            $scope.newTopicTitle = '';
-        }
-    ]).controller('TopicsPanelController', [
-        '$scope', '$stateParams', '$interval', 'MinterSessions', 'Restangular',
-        function TopicsPanelController($scope, $stateParams, $interval, MinterSessions, Restangular) {
-            var topicInterval,
-                getTopics = function getTopics () {
+                }
+
+                $scope.rmTweet = function rmTweet(tweetId) {
+                    updateTweet(tweetId, false);
+                };
+
+                $scope.saveTweet = function rmTweet(tweetId) {
+                    updateTweet(tweetId, true);
+                };
+
+                $scope.fetchTimeline = function fetchTimeline() {
                     Restangular
-                        .all('api/topics')
-                        .getList()
+                        .one('api/users', $rootScope.Sessions.getUser())
+                        .getList('timeline')
                         .then(
-                            function (topicList) {
-                                $scope.topics = topicList;
-
-                            },
-                            function (err) {
-                                $scope.topics = [];
+                            function (tweets) {
+                                angular.copy(tweets, $scope.selectedTweets);
+                                $log.debug(tweets);
                             }
                         );
                 };
 
-            $scope.topic = {};
-            $scope.selectedTweets = [];
-            if (!/^new$/.test($stateParams.topicId)) {
-                $scope.newTopic = false;
-                Restangular
-                    .one('api/topics', $stateParams.topicId)
-                    .get()
-                    .then(
-                        function (thisTopic) {
-                            $scope.topic = thisTopic[0];
-                        }
-                    );
-            } else {
-                $scope.topic = {
-                    title: '',
-                    timelineCount: 100,
-                    search: ''
-                }
-                $scope.newTopic = true;
+                $scope.twitterSearch = function twitterSearch() {
+                    Restangular
+                        .one(
+                            'api/users',
+                            $rootScope.Sessions.getUser()
+                        ).getList(
+                            'search',
+                            {q: $scope.topic.search}
+                        ).then(
+                            function (tweets) {
+                                angular.copy(tweets, $scope.selectedTweets);
+                                $log.debug(tweets);
+                            }
+                        );
+                };
             }
-            if (MinterSessions.checkSession()) {
-                getTopics();
-                topicInterval = $interval(getTopics, 10000);
-            }
-
-            function cancelInterval () {
-                if (angular.isObject(topicInterval)) {
-                    $interval.cancel(topicInterval);
-                }
-            }
-
-            $scope.$on('session.logout', cancelInterval);
-            $scope.$on('$destroy', cancelInterval);
-            $scope.$on('session.login', getTopics);
-        }
-    ]).controller(
+        ]
+    ).controller(
         'TopicsEditController',
         [
             '$rootScope', '$scope', '$log', '$stateParams', 'Restangular',
@@ -168,29 +154,48 @@ angular.module(
                     }
                 };
 
-                $scope.fetchTimeline = function fetchTimeline() {
-                    Restangular
-                        .one('api/users', $rootScope.Sessions.getUser())
-                        .getList('timeline')
-                        .then(
-                            function (tweets) {
-                                angular.copy(tweets, $scope.selectedTweets);
-                                $log.debug(tweets);
-                            }
-                        );
+
+            }
+        ]
+    ).controller(
+        'TopicTweetsIndexController',
+        [
+            '$rootScope', '$scope', '$log', '$stateParams', 'Restangular',
+            function TopicTweetsIndexController($rootScope, $scope, $log, $stateParams, Restangular) {
+
+
+                $scope.saveTopicConfig = function saveTopicConfig() {
+                    if (!$scope.newTopic) {
+                        Restangular
+                            .one('api/topics', $stateParams.topicId)
+                            .get()
+                            .then(
+                                function (thisTopic) {
+                                    angular.copy(thisTopic[0], $scope.topic);
+                                    Restangular
+                                        .one('api/topics', $stateParams.topicId)
+                                        .put($scope.topic)
+                                        .then(
+                                            function (savedTopic) {
+                                                $scope.newTopic = false;
+                                            }
+                                        );
+                                }
+                            );
+                    } else {
+                        Restangular
+                            .all('api/topics')
+                            .post($scope.topic)
+                            .then(
+                                function (savedTopic) {
+                                    angular.copy(savedTopic, $scope.topic);
+                                    $log.debug(savedTopic);
+                                }
+                            );
+                    }
                 };
 
-                $scope.twitterSearch = function twitterSearch() {
-                    Restangular
-                        .one('api/users', $rootScope.Sessions.getUser())
-                        .getList('search', {q: $scope.topic.search})
-                        .then(
-                            function (tweets) {
-                                angular.copy(tweets, $scope.selectedTweets);
-                                $log.debug(tweets);
-                            }
-                        );
-                };
+
             }
         ]
     );
