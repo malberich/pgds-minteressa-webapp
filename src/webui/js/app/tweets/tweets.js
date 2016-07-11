@@ -52,43 +52,6 @@ angular
 
                     }
                 );
-
-            // function updateTweet (tweetId, selected) {
-            //     Restangular
-            //         .one('api/tweets', tweetId)
-            //         .get()
-            //         .then(
-            //             function (tweetData) {
-            //                 var thisTweet = tweetData.data[0] || {id: tweetId, seleted: false};
-            //                 thisTweet.selected = false;
-            //                 return thisTweet
-            //                     .put()
-            //                     .then(
-            //                         function () {
-            //                             var counter = 0, item;
-            //                             for (item in $scope.tweets) {
-            //                                 if ($scope.tweets[item].id === tweetId) {
-            //                                     $scope.tweets.splice(counter, 1);
-            //                                     break;
-            //                                 }
-            //                                 counter += 1;
-            //                             }
-            //                         }
-            //                     );
-            //             }
-            //         );
-            // }
-
-            // $scope.rmTweet = function rmTweet(tweetId) {
-            //     updateTweet(tweetId, false);
-            // };
-
-            // $scope.saveTweet = function rmTweet(tweetId) {
-            //     updateTweet(tweetId, true);
-            // };
-
-
-            $scope.sample_text = 'This is a sample text from a scrapped page.  This is a sample text from a scrapped page.  This is a sample text from a scrapped page.  This is a sample text from a scrapped page.  ';
         }
     ]).controller(
     'TweetsSearchIndexController',
@@ -96,150 +59,99 @@ angular
         '$rootScope', '$scope', '$stateParams', 'Restangular',
         function TweetsSearchIndexController($rootScope, $scope, $stateParams, Restangular) {
             'use strict';
-            $scope.saved = false;
-            Restangular
-                .one('api/users', $rootScope.Sessions.getUser())
-                .all(
-                    'tweets',
-                    {
-                        reviewed: 0
-                    }
-                )
-                .getList()
-                .then(
-                    function (tweets) {
-                        $scope.selectedTweets = tweets;
-                    },
-                    function (err) {
+            // $scope.saved = false;
+            // $scope.searching = false;
+            // Restangular
+            //     .one('api/users', $rootScope.Sessions.getUser())
+            //     .all(
+            //         'tweets',
+            //         {
+            //             reviewed: 0
+            //         }
+            //     )
+            //     .getList()
+            //     .then(
+            //         function (tweets) {
+            //             $scope.selectedTweets = tweets;
+            //         },
+            //         function (err) {
 
-                    }
-                );
+            //         }
+            //     );
 
-            $scope.twitterSearch = function twitterSearch() {
-                Restangular
-                    .one('api/users', $rootScope.Sessions.getUser())
-                    .one('search', {q: $scope.topic.search})
-                    .get()
-                    .then(
-                        function (tweets) {
-                            $scope.selectedTweets = tweets;
-                            $log.debug(tweets);
-                        }
-                    );
-            };
+            // $scope.twitterSearch = function twitterSearch() {
+            //     console.log("searching...");
+            //     $scope.searching = true;
+            //     Restangular
+            //         .one('api/users', $rootScope.Sessions.getUser())
+            //         .one('search', {q: $scope.topic.search})
+            //         .get()
+            //         .then(
+            //             function (tweets) {
+            //                 console.log("search returned...");
+            //                 $scope.searching = false;
+            //                 $scope.selectedTweets = tweets;
+            //                 $log.debug(tweets);
+            //             }
+            //         );
+            // };
+
+
         }
     ]).controller(
-        'TweetsSavedIndexController',
-        [
-            '$scope', '$stateParams', 'Restangular',
-            function TweetsSavedIndexController($scope, $stateParams, Restangular) {
-                'use strict';
-                $scope.saved = true;
-                $scope.topicId = $stateParams.topicId;
-                Restangular
-                    .all('api/tweets')
-                    .getList(
-                        {
-                            reviewed: 200
-                        }
-                    ).then(
-                        function (tweets) {
-                            $scope.reviewedTweets = tweets;
-                        },
-                        function (err) {
-
-                        }
-                    );
-
-                // function updateTweet (tweetId, selected) {
-                //     Restangular
-                //         .one('api/users', $rootScope.Sessions.getUser())
-                //         .one('tweets', tweetId)
-                //         .get()
-                //         .then(
-                //             function (tweetData) {
-                //                 var thisTweet = tweetData.data[0] || {id: tweetId, selected: false};
-                //                 thisTweet.selected = false;
-                //                 return thisTweet
-                //                     .put()
-                //                     .then(
-                //                         function () {
-                //                             var counter = 0, item;
-                //                             for (item in $scope.tweets) {
-                //                                 if ($scope.tweets[item].id === tweetId) {
-                //                                     $scope.tweets.splice(counter, 1);
-                //                                     break;
-                //                                 }
-                //                                 counter += 1;
-                //                             }
-                //                         }
-                //                     );
-                //             }
-                //         );
-                // }
-
-                // $scope.rmTweet = function rmTweet(tweetId) {
-                //     updateTweet(tweetId, false);
-                // };
-            }
-        ]
-    ).controller(
         'TweetsProposedIndexController',
         [
-            '$scope', '$stateParams', 'Restangular',
+            '$rootScope', '$scope', '$stateParams', 'Restangular',
             function TweetsProposedIndexController(
+                $rootScope,
                 $scope,
                 $stateParams,
                 Restangular
             ) {
                 'use strict';
+
+                $scope.labelRequest = function () {
+                    Restangular
+                        .one('api/users', $rootScope.Sessions.getUser())
+                        .one('tweets','label_request')
+                        .get()
+                        .then(
+                            function (data) {
+                                console.log(data.data[0]);
+                                // $scope.savedTweets = tweets;
+                            },
+                            function (err) {
+
+                            }
+                        );
+                }
+
+            }
+        ]
+    ).controller(
+        'TweetsSavedIndexController',
+        [
+            '$rootScope', '$scope', '$stateParams', 'Restangular',
+            function TweetsSavedIndexController($rootScope, $scope, $stateParams, Restangular) {
+                'use strict';
                 $scope.saved = true;
                 $scope.topicId = $stateParams.topicId;
                 Restangular
-                    .all('api/tweets')
-                    .getList(
+                    .one('api/users', $rootScope.Sessions.getUser())
+                    .all(
+                        'tweets',
                         {
-                            reviewed: 200
+                            reviewed: 0
                         }
-                    ).then(
+                    ).getList()
+                    .then(
                         function (tweets) {
-                            $scope.reviewedTweets = tweets;
+                            $scope.savedTweets = tweets;
                         },
                         function (err) {
 
                         }
                     );
-
-                // function updateTweet (tweetId, selected) {
-                //     Restangular
-                //         .one('api/users', $rootScope.Sessions.getUser())
-                //         .one('tweets', tweetId)
-                //         .get()
-                //         .then(
-                //             function (tweetData) {
-                //                 var thisTweet = tweetData.data[0] || {id: tweetId, selected: false};
-                //                 thisTweet.selected = false;
-                //                 return thisTweet
-                //                     .put()
-                //                     .then(
-                //                         function () {
-                //                             var counter = 0, item;
-                //                             for (item in $scope.tweets) {
-                //                                 if ($scope.tweets[item].id === tweetId) {
-                //                                     $scope.tweets.splice(counter, 1);
-                //                                     break;
-                //                                 }
-                //                                 counter += 1;
-                //                             }
-                //                         }
-                //                     );
-                //             }
-                //         );
-                // }
-
-                // $scope.rmTweet = function rmTweet(tweetId) {
-                //     updateTweet(tweetId, false);
-                // };
             }
         ]
     );

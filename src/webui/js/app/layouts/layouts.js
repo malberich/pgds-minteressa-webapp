@@ -5,8 +5,8 @@ angular
     ).controller(
         'ToolbarController',
         [
-            '$scope', '$log', 'Restangular', 'MinterSessions',
-            function ToolbarController($scope, $log, Restangular, MinterSessions) {
+            '$rootScope', '$scope', '$log', 'Restangular', 'MinterSessions',
+            function ToolbarController($rootScope, $scope, $log, Restangular, MinterSessions) {
                 'use strict';
 
                 $scope.topics = [];
@@ -26,6 +26,7 @@ angular
                             }
                         );
                 }
+
                 $scope.logout = function () {
                     return MinterSessions.logout();
                 };

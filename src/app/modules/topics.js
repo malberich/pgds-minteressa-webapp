@@ -1,8 +1,8 @@
-var express = require('express'),
-	UserModel    = require('../models/user'),
-	passport = require('./passport'),
-	TopicModel    = require('../models/topic'),
-    router = express.Router();
+var express    = require('express'),
+	UserModel  = require('../models/user'),
+	passport   = require('./passport'),
+	TopicModel = require('../models/topic'),
+    router     = express.Router();
 
 router.route('/')
 	.get(

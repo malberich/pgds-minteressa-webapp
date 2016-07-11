@@ -3,8 +3,38 @@ var express    = require('express'),
 	twitter    = require('twitter'),
 	UserModel  = require('../models/user'),
 	TweetModel = require('../models/tweet'),
-    // kafka  = require('node-kafka/lib/kafka'),
-	router     = express.Router();
+    router = express.Router(),
+	kafka = require('kafka-node'),
+	client = new kafka.Client('kafka:2181'),
+	producer = new kafka.Producer(client),
+	consumer;
+
+producer.on(
+	'ready',
+	function () {
+		producer.createTopics(
+			['labeled-1234', 'label-request-1234'],
+			false,
+			function (err, data) {
+				if (!err) {
+					consumer = new kafka.Consumer(
+						client,
+						[
+							{topic: 'raw_tweets'}
+						]
+					);
+					consumer.pause();
+				} else {
+					console.log(err);
+				}
+			}
+		);
+
+	}
+);
+
+
+
 
 router.route('/')
 	.get(
@@ -109,7 +139,7 @@ router.route('/:user_id/search')
 
 							client.get(
 								'search/tweets',
-								{q: req.param('q'), count: 100, },
+								{q: req.query['q'], count: 100, },
 								function (error, tweets, response) {
 									if (!error) {
 										for (var t = 0; t <= tweets.statuses.length; t += 1) {
@@ -136,7 +166,7 @@ router.route('/:user_id/tweets/')
 		require('connect-ensure-login').ensureLoggedIn(),
 		function (req, res) {
 			reviewFilter = (
-				req.param('review') ?
+				req.query['review'] ?
 				{review: req.query.review} :
 				{}
 			);
@@ -156,6 +186,23 @@ router.route('/:user_id/tweets/')
 			res.status(403).json({error: "Cannot create tweets"});
 		}
 	);
+
+router.route('/:user_id/tweets/saved')
+	.get(
+		require('connect-ensure-login').ensureLoggedIn(),
+		function (req, res) {
+			///XXX Should check that user-id is the currently authenticated user
+			return UserModel
+				.findById(req.query['user_id'])
+				.then(
+			   		function(err, rows) {
+			        	res.json(rows[0].tweets);
+			    	}
+		    	);
+		}
+	);
+
+
 
 router.route('/:user_id/tweets/:tweet_id')
 	.get(
@@ -187,60 +234,82 @@ router.route('/:user_id/tweets/:tweet_id/:action')
 	.put(
 		require('connect-ensure-login').ensureLoggedIn(),
 		function (req, res) {
-			// var producer = new kafka.Producer({
-			// 	  brokers: "kafka:2181",
-			// 	  partition: 0,
-			// 	  topic: "topic-1234"
-			// 	}),
-			// 	tweet = req.body;
-			// console.log(tweet);
-			// producer.connect(
-			// 	function() {
-			// 	  producer.send(
-			// 	  	JSON.stringify(tweets),
-			// 	  	// 0,
-			// 	  	function(err) {
-			// 	    	console.log(err)
-			// 	  	}
-			// 	  )/*.on(
-			// 	  	"sent",
-			// 	  	function(err) {
-			// 	    	console.log(err)
-			// 	  	}
-			// 	  ).on(
-			// 	  	"delivery",
-			// 	  	function(err, length) {
-			// 	    	console.log(err, length)
-			// 	  	}
-			// 	  )*/.on(
-			// 	  	"error",
-			// 	  	function(err) {
-			// 	    	console.log(err)
-			// 	  	}
-			// 	  );
-			// 	}
-			// );
+			var tweet = req.body,
+				tweet_action = req.query['action'],
+				uid = req.query['user_id'];
 
-			// producer.send(
-   // 				[
-   // 					{
-   // 						topic: 'topic-' + req.query['user_id'] + 'labeled',
-   // 						messages: tweet
-   // 					}
-			// 	]
-			// );
-			
-			// if (JSON.parse(tweet).minteressa.selected === true) {
-			// 	TweetModel
-			// 		.save(tweet)
-			// 		.then(
-			// 	   		function(err, tweet) {
-			// 	    	}
-			//     	);
-			// }	
-			res.status(200).json({data:[]});
+			if (!tweet.minteressa) {
+				tweet.minteressa = {}
+			}
+			tweet.minteressa.selected = (/save/).test(tweet_action)
+			   						? true
+			   						: false;
+
+			if ((/zzzz/).test(req.query['tweet_id'])) {
+				return UserModel
+					.findById(uid)
+					.then(
+				   		function(err, user) {
+				   			user.topic.status = 2;
+				   			user.save();
+				    	}
+			    	);
+			}
+			//XXX Unique topic for everybody, only for demo purposes
+			producer.createTopics(
+				['labeled-1234'/* + uid*/],
+				false,
+				function (err, data) {
+					if (!err) {
+			      		producer.send(
+				      		[
+				      			{
+					      			topic: 'labeled-' + uid,
+					      			messages: [JSON.stringify(data)],
+					      			attributes: 1
+						      	}
+						    ],
+				      		function (err, data) {
+				      			if (err) {
+				      				console.error("Error", err, data);
+				      			} else {
+				      				console.log("enqueued tweet");
+				      				if(tweet.minteressa.selected === true) {
+		      							return UserModel
+		      								.findById(uid)
+		      								.then(
+		      							   		function(err, user) {
+		      							   			user.topic.tweets.push(tweet);
+		      							    	}
+		      						    	);
+				      				}
+				      				res.status(200).json({data: [tweet]});
+				      			}
+				      		}
+		      			)
+					}
+				}
+			);
+			// res.status(200).json(req.body);
 		}
 	);
 
+router.route('/:user_id/tweets/label_request')
+	.get(
+		require('connect-ensure-login').ensureLoggedIn(),
+		function (req, res) {
+
+			consumer.on(
+				'message',
+				function (msg) {
+					console.log(msg);
+					consumer.commit();
+					consumer.pause();
+					res.status(200).json(msg);
+				}
+			);
+			consumer.resume();
+		}
+	);
 
 module.exports = router;

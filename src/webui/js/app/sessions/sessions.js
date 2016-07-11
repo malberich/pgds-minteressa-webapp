@@ -200,6 +200,7 @@ angular.module(
                     $rootScope.$on(
                         'session.login',
                         function () {
+                            $rootScope.topicStatus = sessionStorage.getUser().topic.status;
                             $state.go($rootScope.Sessions.loggedInState);
                             growl.success("You have successfully logged in");
                         }
@@ -208,6 +209,7 @@ angular.module(
                     $rootScope.$on(
                         'session.logout',
                         function () {
+                            $rootScope.topicStatus = 0;
                             $log.debug("redirecting to", $rootScope.Sessions.loginState);
                             $state.go($rootScope.Sessions.loginState);
                             growl.warning("You have successfully logged out");
@@ -217,6 +219,7 @@ angular.module(
                     $rootScope.$on(
                         'session.unauthorized',
                         function (ev, params) {
+                            $rootScope.topicStatus = 0;
                             $rootScope.Sessions.redirect403();
                             // $state.go($rootScope.Sessions.forbiddenState);
                             growl.warning(

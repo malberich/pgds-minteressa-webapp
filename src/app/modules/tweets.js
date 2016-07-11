@@ -7,7 +7,7 @@ router.route('/')
 		require('connect-ensure-login').ensureLoggedIn(),
 		function (req, res) {
 			reviewFilter = (
-				req.param('review') ?
+				req.query['review'] ?
 				{review: req.query.review} :
 				{}
 			);
@@ -27,6 +27,7 @@ router.route('/')
 			res.status(403).json({error: "Cannot create tweets"});
 		}
 	);
+
 
 router.route('/:tweet_id')
 	.get(
@@ -53,33 +54,6 @@ router.route('/:tweet_id')
 		}
 	);
 
-router.route('/:tweet_id/classify/:action')
-	.put(
-		require('connect-ensure-login').ensureLoggedIn(),
-		function (req, res) {
-			tweet_action = req.query['action'];
-			return TweetModel
-				.find({id_str: req.query['tweet_id']})
-				.then(
-			   		function(err, tweet) {
-			   			tweet = tweet[0];
-			   			tweet.minteressa = {
-			   				selected: (
-			   					(/save/).test(tweet_action)
-			   						? true
-			   						: false 
-	   						)
-			   			}
 
-			    	}
-		    	);
-			res.status(200).json(req.body);
-		}
-	).delete(
-		require('connect-ensure-login').ensureLoggedIn(),
-		function (req, res) {
-			res.status(200).json(['OK']);
-		}
-	);
 
 module.exports = router;

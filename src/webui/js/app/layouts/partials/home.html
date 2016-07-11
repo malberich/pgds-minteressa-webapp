@@ -13,39 +13,28 @@
 		    <uib-tab>
 		    	<uib-tab-heading>
 		    		<span class="fa fa-list"></span>
-	            Select and discard tweets
-	            <!-- &nbsp;&nbsp;<span class="pull-right badge">2</span> -->
-		    	</uib-tab-heading>
+	            	Select and discard tweets
+	            </uib-tab-heading>
 		    	<br/>
-	        	<div class="row">
-					<div class="col-xs-6" ui-view="tweet_search">
-					</div>
+		    	<div class="row">
+		    		<div class="col-xs-12">
+		    			<p class="text text-warning" ng-if="searching">Searching...</p>
+
+		    		</div>
+					<div class="col-xs-6" ng-show="topicStatus!='2'" ui-view="tweet_search"></div>
+					<div class="col-xs-6" ng-show="topicStatus=='2'" ui-view="tweet_label_request"></div>
 				</div>
 			</uib-tab>
-			<uib-tab>
-		    	<uib-tab-heading>
-		    		<span class="fa fa-star"></span>
-		    		Proposed tweets
-		    		<!-- &nbsp;&nbsp;<span class="pull-right badge">3</span> -->
-		    	</uib-tab-heading>
-		    	<br/>
-	        	<div class="row">
-	        		<div class="col-xs-6" ui-view="tweet_label_request">
-		</div>
-	        	</div>
-	        </uib-tab>
-	        <uib-tab>
+			<!-- <uib-tab>
 		    	<uib-tab-heading>
 		    		<span class="fa fa-star"></span>
 		    		Saved tweets
-		    		<!-- &nbsp;&nbsp;<span class="pull-right badge">4</span> -->
 		    	</uib-tab-heading>
 		    	<br/>
 	        	<div class="row">
-	        		<div class="col-xs-6" ui-view="tweet_saved">
-	        		</div>
+	        		<div class="col-xs-6" ui-view="tweet_saved"></div>
 	        	</div>
-	        </uib-tab>
+	        </uib-tab> -->
 		</uib-tabset>
 	</div>
 </div>

@@ -157,6 +157,7 @@ angular.module(
             $rootScope.toStateParams = null;
             $rootScope.returnToState = null;
             $rootScope.returnToStateParams = null;
+            $rootScope.topicStatus   = 0;
 
             $rootScope.notifications = [];
 

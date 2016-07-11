@@ -8,42 +8,6 @@ angular.module(
             'RestResources',
             'ui.router'
         ]
-    ).config(
-        function config($stateProvider) {
-            'use strict';
-            $stateProvider
-                .state(
-                    'authz.topics',
-                    {
-                        parent: 'authz',
-                        url: '^/',
-                        views: {
-                            '': {
-                                templateUrl: 'js/app/topics/partials/panel.html',
-                                controller: 'TopicsPanelController'
-                            },
-                            'config@authz.topics': {
-                                templateUrl: 'js/app/topics/partials/edit.html',
-                                controller: 'TopicsEditController'
-                            },
-                            'saved@authz.topics': {
-                                templateUrl: 'js/app/tweets/partials/index.html',
-                                controller: 'TopicSavedTweetsController'
-                            },
-                            'unreviewed@authz.topics': {
-                                templateUrl: 'js/app/tweets/partials/index.html',
-                                controller: 'TopicTweetsIndexController'
-                            },
-                            'searched@authz.topics': {
-                                templateUrl: 'js/app/tweets/partials/searched.html'
-                            },
-                            'view@authz.topics': {
-                                templateUrl: 'js/app/tweets/partials/view.html'
-                            }
-                        }
-                    }
-                );
-        }
     ).controller(
         'TopicsHomeController',
         [
@@ -52,6 +16,8 @@ angular.module(
                 $scope.selectedTweets = [];
                 $scope.classifiedTweets = [];
                 $scope.topic = {};
+                $scope.searching = false;
+                $scope.saved = false;
                 //TODO Perform periodic push against the server for saving the tweets
                 function updateTweet (tweetId, selected) {
                     for (var item in $scope.selectedTweets) {
@@ -71,7 +37,7 @@ angular.module(
                                 ).then(
                                     function (data) {
                                         // $scope.classifiedTweets.push($scope.selectedTweets[item]);
-                                        
+
                                     }
                                  );
                         }
@@ -100,6 +66,7 @@ angular.module(
                 };
 
                 $scope.twitterSearch = function twitterSearch() {
+                    $scope.searching = true;
                     Restangular
                         .one(
                             'api/users',
@@ -109,11 +76,25 @@ angular.module(
                             {q: $scope.topic.search}
                         ).then(
                             function (tweets) {
+                                $scope.searching = false;
                                 angular.copy(tweets, $scope.selectedTweets);
                                 $log.debug(tweets);
                             }
                         );
                 };
+
+                $scope.finishTrain = function finishTrain() {
+                    Restangular
+                        .one('api/users', $rootScope.Sessions.getUser())
+                        .one('tweets/_zzzz_/discard')
+                        .customPUT(
+                            {stop_train: true}
+                        ).then(
+                            function () {
+                                $rootScope.topicStatus = 2;
+                            }
+                        );
+                }
             }
         ]
     ).controller(

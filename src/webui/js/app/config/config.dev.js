@@ -73,8 +73,8 @@ angular
                                 templateUrl: 'js/app/tweets/partials/searched.html'
                             },
                             'tweet_label_request@authz.panel': {
-                                controller: 'TweetsSearchIndexController',
-                                templateUrl: 'js/app/tweets/partials/index.html'
+                                controller: 'TweetsProposedIndexController',
+                                templateUrl: 'js/app/tweets/partials/proposed.html'
                             },
                             'tweet_saved@authz.panel': {
                                 controller: 'TweetsSavedIndexController',
