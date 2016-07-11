@@ -174,7 +174,11 @@ angular.module(
                             $rootScope.toStateParams = toStateParams;
                         }
                         if (toState.name === $rootScope.Sessions.loginState) {
-                            $log.debug("Loading login page");
+                            // if (!$rootScope.Sessions.checkSession()) {
+                                $log.debug("Loading login page");
+                            // } else {
+                                // $state.go(Config.loggedInState);
+                            // }
                         } else {
                             $log.debug(
                                 "$stateChangeStart Saving non-abstract toState",
@@ -193,6 +197,7 @@ angular.module(
                                     .preloadSession()
                                     .then(
                                         function (session) {
+                                            $log.debug("$stateChangeStart session", session)
                                             if (
                                                 session === null ||
                                                 angular.isUndefined(session) ||
@@ -200,7 +205,8 @@ angular.module(
                                             ) {
                                                 $log.debug("Session precheck: user not authenticated, redirecting to login page");
                                                 $rootScope.Sessions.redirect403();
-                                            } else if (!MinterSessions.getUser().length) {
+                                            } else if (!$rootScope.Sessions.getUser()) {
+                                                $log.debug("Session precheck: user data seems empty", $rootScope.Sessions.getUser());
                                                 $rootScope.Sessions.logout();
                                             }
                                         },
