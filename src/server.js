@@ -28,17 +28,19 @@ app.use('/api/users', require('./app/modules/users'));
 app.use('/api/sessions', require('./app/modules/sessions'));
 
 app.use('/api/topics', require('./app/modules/topics'));
-app.use('/api/topics/:topicId/tweets', require('./app/modules/tweets'));
-app.use('/api/topics/:topicId/documents', require('./app/modules/documents'));
+app.use('/api/tweets', require('./app/modules/tweets'));
+// app.use('/api/documents', require('./app/modules/documents'));
 
 app.use('/auth', require('./app/modules/auth'));
 
+// app.use('/monitor', require('./app/modules/monitor'));
+
 mongoose.connect(
 	'mongodb://' +
-	(process.env.mongohost || 'localhost') + ':' +
+	(process.env.mongohost || '127.0.0.1') + ':' +
 	(process.env.mongoport || '27017') + '/' +
 	(process.env.mongodb   || 'minteressa')
 ); // connect to our database
 
-app.listen(port);
 
+app.listen(port);
