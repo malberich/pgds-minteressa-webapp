@@ -1,9 +1,20 @@
-pgds-minteressa-webdb:
-  image: mongo:3.2
-#  container_name: pgds-minteressa-webapp
-pgds-minteressa-webapp:
-  build: src
-  ports:
-    - "8080:8080"
-  links:
-    - pgds-minteressa-webdb:pgds-minteressa-webdb
+version: '2'
+services:
+  pgds-mongo:
+    image: mongo:3.2
+    # volumes:
+    #   - /home/data:/data/db
+    ports:
+      - "27017:27017"
+    network_mode: host
+  pgds-webapp:
+    build: .
+    network_mode: host
+    ports:
+      - "8080:8080"
+    volumes:
+      - "./src:/opt/app"
+    depends_on:
+      - pgds-mongo
+    #links:
+    #  - pgds-mongo:pgds-mongo
