@@ -1,0 +1,51 @@
+<div class="row">
+	<div class="col-xs-12">
+		<p class="alert alert-warning">
+			This is a beta and limited version. Please, take into account that it may present errors and not so well explained restrictions of the usage.  Thanks in advance for using and testing it :)
+		</p>
+	</div>
+</div>
+<div class="row">
+	<div class="col-md-3 col-xs-6" ui-view="topic_config">
+	</div>
+	<div class="col-md-9 col-xs-6">
+		<uib-tabset>
+		    <uib-tab>
+		    	<uib-tab-heading>
+		    		<span class="fa fa-list"></span>
+	            Select and discard tweets
+	            <!-- &nbsp;&nbsp;<span class="pull-right badge">2</span> -->
+		    	</uib-tab-heading>
+		    	<br/>
+	        	<div class="row">
+					<div class="col-xs-6" ui-view="tweet_search">
+					</div>
+				</div>
+			</uib-tab>
+			<uib-tab>
+		    	<uib-tab-heading>
+		    		<span class="fa fa-star"></span>
+		    		Proposed tweets
+		    		<!-- &nbsp;&nbsp;<span class="pull-right badge">3</span> -->
+		    	</uib-tab-heading>
+		    	<br/>
+	        	<div class="row">
+	        		<div class="col-xs-6" ui-view="tweet_label_request">
+		</div>
+	        	</div>
+	        </uib-tab>
+	        <uib-tab>
+		    	<uib-tab-heading>
+		    		<span class="fa fa-star"></span>
+		    		Saved tweets
+		    		<!-- &nbsp;&nbsp;<span class="pull-right badge">4</span> -->
+		    	</uib-tab-heading>
+		    	<br/>
+	        	<div class="row">
+	        		<div class="col-xs-6" ui-view="tweet_saved">
+	        		</div>
+	        	</div>
+	        </uib-tab>
+		</uib-tabset>
+	</div>
+</div>
