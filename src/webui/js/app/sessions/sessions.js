@@ -140,12 +140,12 @@ angular.module(
                 };
 
                 currentService.preloadSession = function preloadSession() {
-                    var deferred = $q.defer();
-                    sessObject = sessionStorage.getSession();
+                    var deferred = $q.defer(),
+                        sessObject = sessionStorage.getSession();
                     if (angular.isObject(sessObject)) {
                         deferred.resolve(sessObject);
                     } else {
-                        return currentService
+                        currentService
                             .getList()
                             .then(
                                 function (session) {
@@ -155,9 +155,10 @@ angular.module(
                                         session[0],
                                         (session[0].passport || {user: ""}).user
                                     );
-                                    return deferred.resolve(sessionStorage.getSession());
+                                    return deferred.resolve(session[0]);
                                 },
                                 function (err) {
+                                    $log.debug("Error loading session", err);
                                     $rootScope.Sessions.preloaded = true;
                                     return deferred.reject(null);
                                 }
