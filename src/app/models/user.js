@@ -1,5 +1,6 @@
-var mongoose     = require('mongoose'),
-	Schema       = mongoose.Schema,
+var mongoose      = require('mongoose'),
+	Schema        = mongoose.Schema,
+    LanguageModel = require('./language'),
 
     UserSchema   = new Schema(
         {
@@ -18,6 +19,14 @@ var mongoose     = require('mongoose'),
                 created_at: Number,
                 verified: Boolean,
                 verification_token: String
+            },
+            topic: {
+                status: Number, // 0 = undefined, 1 = feeding, 2 = running
+                title: String,
+                search: String,
+                timelineCount: Number,
+                languages: [{type:String, ref: LanguageModel}],
+                seedSources: [String]
             }
         }
     );
